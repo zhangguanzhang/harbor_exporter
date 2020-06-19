@@ -12,7 +12,7 @@ import (
 var _ Scraper = ScrapeProjects{}
 
 const (
-	projectsUrl  = "/projects"
+	projectsUrl = "/projects"
 )
 
 var (
@@ -26,7 +26,6 @@ var (
 		"test the repos api ref work status(0 for error, 1 for success).",
 		[]string{"ref", "method"}, nil,
 	)
-
 )
 
 type projectsJson struct {
@@ -36,7 +35,6 @@ type projectsJson struct {
 type metadataJson struct {
 	Public string `json:"public"`
 }
-
 
 type ScrapeProjects struct{}
 
@@ -53,31 +51,42 @@ func (ScrapeProjects) Help() string {
 // Scrape collects data from client and sends it over channel as prometheus metric.
 func (ScrapeProjects) Scrape(client *HarborClient, ch chan<- prometheus.Metric) error {
 	var (
-		id int
+		id  int
 		err error
 	)
 
 	id, err = projects(client, ch)
-	if err != nil {return err}
+	if err != nil {
+		return err
+	}
 
 	err = projectsLogs(id, client, ch)
-	if err != nil {return err}
+	if err != nil {
+		return err
+	}
 
 	err = projectsMetadata(id, client, ch)
-	if err != nil {return err}
+	if err != nil {
+		return err
+	}
 
 	err = projectsMembers(id, client, ch)
-	if err != nil {return err}
+	if err != nil {
+		return err
+	}
 
 	err = reposQuery(id, client, ch)
-	if err != nil {return err}
+	if err != nil {
+		return err
+	}
 
 	err = reposTop(client, ch)
-	if err != nil {return err}
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
-
 
 func projects(client *HarborClient, ch chan<- prometheus.Metric) (int, error) {
 	var data []projectsJson
@@ -121,8 +130,7 @@ func projects(client *HarborClient, ch chan<- prometheus.Metric) (int, error) {
 	return id, nil
 }
 
-
-func projectsLogs(id int,client *HarborClient, ch chan<- prometheus.Metric) error {
+func projectsLogs(id int, client *HarborClient, ch chan<- prometheus.Metric) error {
 	var data []projectsJson
 	url := fmt.Sprintf("/projects/%d/logs?page_size=1", id)
 	body, err := client.request(url)
@@ -144,7 +152,7 @@ func projectsLogs(id int,client *HarborClient, ch chan<- prometheus.Metric) erro
 	return nil
 }
 
-func projectsMetadata(id int,client *HarborClient, ch chan<- prometheus.Metric) error {
+func projectsMetadata(id int, client *HarborClient, ch chan<- prometheus.Metric) error {
 	var data metadataJson
 	url := fmt.Sprintf("/projects/%d/metadatas", id)
 	body, err := client.request(url)
@@ -183,7 +191,6 @@ func projectsMetadata(id int,client *HarborClient, ch chan<- prometheus.Metric) 
 	return nil
 }
 
-
 func projectsMembers(id int, client *HarborClient, ch chan<- prometheus.Metric) error {
 	var data []subInsJson
 	url := fmt.Sprintf("/projects/%d/members", id)
@@ -203,7 +210,6 @@ func projectsMembers(id int, client *HarborClient, ch chan<- prometheus.Metric) 
 	ch <- prometheus.MustNewConstMetric(projectsRefInfo, prometheus.GaugeValue,
 		1, "/projects/{project_id}/members", "GET")
 
-
 	var result subInsJson
 	// some version (e.g., v1.8.1 https://github.com/goharbor/harbor/issues/12273), It will return 403
 	url = fmt.Sprintf("/projects/%d/members/%d", id, id)
@@ -222,7 +228,6 @@ func projectsMembers(id int, client *HarborClient, ch chan<- prometheus.Metric) 
 
 	ch <- prometheus.MustNewConstMetric(projectsRefInfo, prometheus.GaugeValue,
 		1, "/projects/{project_id}/members/{mid}", "GET")
-
 
 	return nil
 }
@@ -280,9 +285,6 @@ func reposQuery(id int, client *HarborClient, ch chan<- prometheus.Metric) error
 //	return nil
 //}
 
-
-
-
 func reposTop(client *HarborClient, ch chan<- prometheus.Metric) error {
 	var data []repoJson
 	url := "/repositories/top" + "?count=1"
@@ -302,18 +304,8 @@ func reposTop(client *HarborClient, ch chan<- prometheus.Metric) error {
 	ch <- prometheus.MustNewConstMetric(reposRefInfo, prometheus.GaugeValue,
 		1, "/repositories/top", "GET")
 
-	return  nil
+	return nil
 }
-
-
-
-
-
-
-
-
-
-
 
 //const (
 //	projectsUrl  = "/projects"
@@ -390,29 +382,29 @@ func reposTop(client *HarborClient, ch chan<- prometheus.Metric) error {
 
 //type projectsJson struct {
 //	ProjectID int `json:"project_id"`
-	//OwnerID           int       `json:"owner_id"`
-	//Name              string    `json:"name"`
-	//CreationTime      time.Time `json:"creation_time"`
-	//UpdateTime        time.Time `json:"update_time"`
-	//Deleted           int       `json:"deleted"`
-	//OwnerName         string    `json:"owner_name"`
-	//Togglable         bool      `json:"togglable"`
-	//CurrentUserRoleID int       `json:"current_user_role_id"`
-	//RepoCount         int       `json:"repo_count"`
+//OwnerID           int       `json:"owner_id"`
+//Name              string    `json:"name"`
+//CreationTime      time.Time `json:"creation_time"`
+//UpdateTime        time.Time `json:"update_time"`
+//Deleted           int       `json:"deleted"`
+//OwnerName         string    `json:"owner_name"`
+//Togglable         bool      `json:"togglable"`
+//CurrentUserRoleID int       `json:"current_user_role_id"`
+//RepoCount         int       `json:"repo_count"`
 //	Metadata struct {
 //		Public string `json:"public"`
 //	} `json:"metadata"`
 //}
 
 //type repositoriesJson struct {
-	//ID           int           `json:"id"`
-	//Name string `json:"name"`
-	//ProjectID    int           `json:"project_id"`
-	//Description  string        `json:"description"`
-	//PullCount float64 `json:"pull_count"`
-	//StarCount float64 `json:"star_count"`
-	//TagsCount float64 `json:"tags_count"`
-	//Labels       []interface{} `json:"labels"`
-	//CreationTime time.Time     `json:"creation_time"`
-	//UpdateTime   time.Time     `json:"update_time"`
+//ID           int           `json:"id"`
+//Name string `json:"name"`
+//ProjectID    int           `json:"project_id"`
+//Description  string        `json:"description"`
+//PullCount float64 `json:"pull_count"`
+//StarCount float64 `json:"star_count"`
+//TagsCount float64 `json:"tags_count"`
+//Labels       []interface{} `json:"labels"`
+//CreationTime time.Time     `json:"creation_time"`
+//UpdateTime   time.Time     `json:"update_time"`
 //}

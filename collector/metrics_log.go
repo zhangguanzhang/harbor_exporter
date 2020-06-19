@@ -9,14 +9,12 @@ import (
 // check interface
 var _ Scraper = ScrapeLogs{}
 
-
 var (
 	logRefInfo = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "ref_work", "logs"),
 		"test the logs ref work status(0 for error, 1 for success).",
 		[]string{"ref", "method"}, nil,
 	)
-
 )
 
 type ScrapeLogs struct{}
@@ -54,8 +52,6 @@ func (ScrapeLogs) Scrape(client *HarborClient, ch chan<- prometheus.Metric) erro
 	return nil
 }
 
-
 type logJson struct {
 	ID int `json:"log_id"`
 }
-

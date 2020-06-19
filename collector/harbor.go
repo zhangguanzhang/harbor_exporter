@@ -12,15 +12,15 @@ import (
 
 var (
 	Scrapers = map[Scraper]bool{
-		ScrapeSystemInfo{}: true,
-		ScrapeStatistics{}: true,
-		ScrapeQuotas{}: true,
-		ScrapeHealth{}: true,
-		ScrapeProjects{}: true,
-		ScrapeUsers{}: true,
-		ScrapeLogs{}: true,
+		ScrapeSystemInfo{}:  true,
+		ScrapeStatistics{}:  true,
+		ScrapeQuotas{}:      true,
+		ScrapeHealth{}:      true,
+		ScrapeProjects{}:    true,
+		ScrapeUsers{}:       true,
+		ScrapeLogs{}:        true,
 		ScrapeReplication{}: false,
-		ScrapeGc{}: true,
+		ScrapeGc{}:          true,
 	}
 
 	// TODO
@@ -28,7 +28,6 @@ var (
 
 	resultErr = errors.New("cannot find data, maybe json is nil at")
 )
-
 
 type HarborOpts struct {
 	Url      string
@@ -46,7 +45,7 @@ type HarborClient struct {
 
 // could use for member and repos
 type subInsJson struct {
-	Id int	`json:"id"`
+	Id        int `json:"id"`
 	ProjectID int `json:"project_id"`
 }
 
@@ -65,12 +64,12 @@ func (o *HarborOpts) AddFlag() {
 	flag.StringVar(&o.Username, "harbor-user", "admin", "harbor username")
 	flag.StringVar(&o.password, "harbor-pass", "password", "harbor password")
 	flag.StringVar(&o.UA, "harbor-ua", "harbor_exporter", "user agent of the harbor http client")
-	flag.DurationVar(&o.Timeout, "time-out", time.Millisecond * 1600, "Timeout on HTTP requests to the harbor API.")
+	flag.DurationVar(&o.Timeout, "time-out", time.Millisecond*1600, "Timeout on HTTP requests to the harbor API.")
 	flag.BoolVar(&o.Insecure, "insecure", false, "Disable TLS host verification.")
 }
 
 func (h *HarborClient) request(endpoint string) ([]byte, error) {
-	url := h.Opts.Url+ endpoint
+	url := h.Opts.Url + endpoint
 	log.Debugf("request url %s", url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -79,7 +78,7 @@ func (h *HarborClient) request(endpoint string) ([]byte, error) {
 
 	req.SetBasicAuth(h.Opts.Username, h.Opts.password)
 	req.Header.Set("User-Agent", h.Opts.UA)
-	req.Header.Set("Content-Type","application/json; charset=utf-8")
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 
 	resp, err := h.Client.Do(req)
 	if err != nil {
@@ -101,7 +100,7 @@ func (h *HarborClient) request(endpoint string) ([]byte, error) {
 }
 
 func (h *HarborClient) Ping() (bool, error) {
-	req, err := http.NewRequest("GET", h.Opts.Url + "/configurations", nil)
+	req, err := http.NewRequest("GET", h.Opts.Url+"/configurations", nil)
 	if err != nil {
 		return false, err
 	}

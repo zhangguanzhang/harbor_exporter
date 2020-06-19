@@ -13,12 +13,11 @@ import (
 	"strings"
 	"sync"
 	"time"
-
 	//"github.com/prometheus/client_golang/prometheus"
 )
 
 const (
-	name = "harbor_exporter"
+	name      = "harbor_exporter"
 	namespace = "harbor"
 	//Subsystem(s).
 	exporter = "exporter"
@@ -27,8 +26,6 @@ const (
 func Name() string {
 	return name
 }
-
-
 
 // Verify if Exporter implements prometheus.Collector
 var _ prometheus.Collector = (*Exporter)(nil)
@@ -48,7 +45,6 @@ type Exporter struct {
 	scrapers []Scraper
 	metrics  Metrics
 }
-
 
 func New(opts *HarborOpts, metrics Metrics, scrapers []Scraper) (*Exporter, error) {
 	uri := opts.Url
@@ -94,14 +90,14 @@ func New(opts *HarborOpts, metrics Metrics, scrapers []Scraper) (*Exporter, erro
 	hc := &HarborClient{
 		Opts: opts,
 		Client: &http.Client{
-			Timeout: opts.Timeout,
+			Timeout:   opts.Timeout,
 			Transport: transport,
 		},
 	}
 
 	return &Exporter{
-		client: hc,
-		metrics: metrics,
+		client:   hc,
+		metrics:  metrics,
 		scrapers: scrapers,
 	}, nil
 }
@@ -130,7 +126,7 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 
 	if pong, err := e.client.Ping(); pong != true || err != nil {
 		log.WithFields(log.Fields{
-			"url": e.client.Opts.Url,
+			"url":      e.client.Opts.Url,
 			"username": e.client.Opts.Username,
 		}).Error(err)
 		e.metrics.HarborUp.Set(0)
@@ -160,13 +156,12 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 	}
 }
 
-
 // Metrics represents exporter metrics which values can be carried between http requests.
 type Metrics struct {
 	TotalScrapes prometheus.Counter
 	ScrapeErrors *prometheus.CounterVec
 	Error        prometheus.Gauge
-	HarborUp      prometheus.Gauge
+	HarborUp     prometheus.Gauge
 }
 
 // NewMetrics creates new Metrics instance.

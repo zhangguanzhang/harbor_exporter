@@ -10,7 +10,6 @@ import (
 // check interface
 var _ Scraper = ScrapeReplication{}
 
-
 var (
 	replicationRefInfo = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "ref_work", "replication"),
@@ -89,6 +88,3 @@ func (ScrapeReplication) Scrape(client *HarborClient, ch chan<- prometheus.Metri
 
 	return nil
 }
-
-
-

@@ -17,7 +17,6 @@ var (
 	systemVolumes = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "system_volumes_bytes"),
 		"Get system volume info (total/free size).", []string{"type"}, nil)
-
 )
 
 type ScrapeQuotas struct{}
@@ -31,7 +30,6 @@ func (ScrapeQuotas) Name() string {
 func (ScrapeQuotas) Help() string {
 	return "Collect the systeminfoVolumes, user must have admin"
 }
-
 
 // Scrape collects data from client and sends it over channel as prometheus metric.
 func (ScrapeQuotas) Scrape(client *HarborClient, ch chan<- prometheus.Metric) error {
@@ -58,7 +56,7 @@ func (ScrapeQuotas) Scrape(client *HarborClient, ch chan<- prometheus.Metric) er
 	)
 
 	ch <- prometheus.MustNewConstMetric(
-		systemVolumes, prometheus.GaugeValue, data.Storage.Total - data.Storage.Free, "used",
+		systemVolumes, prometheus.GaugeValue, data.Storage.Total-data.Storage.Free, "used",
 	)
 
 	return nil

@@ -39,22 +39,24 @@ func LogInit(level string, file string) error {
 
 func main() {
 
-
 	listenAddress := flag.String("web.listen-address", ":9107", "Address to listen on for web interface and telemetry.")
 	metricsPath := flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 	logLevel := flag.String("log-level", "info", "The logging level:[debug, info, warn, error, fatal]")
-	logFile := flag.String( "log-output", "", "the file which log to, default stdout")
+	logFile := flag.String("log-output", "", "the file which log to, default stdout")
 	flag.StringVar(&collector.HarborVersion, "override-version", "", "override the harbor version")
 
 	opts := &collector.HarborOpts{}
 	opts.AddFlag()
 
-	enabledScrapers := []collector.Scraper{}
+	// Generate ON/OFF flags for all scrapers.
+	scraperFlags := map[collector.Scraper]*bool{}
 	for scraper, enabledByDefault := range collector.Scrapers {
-		flag.Bool("collect." + scraper.Name(), enabledByDefault, scraper.Help())
+		defaultOn := false
 		if enabledByDefault {
-			enabledScrapers = append(enabledScrapers, scraper)
+			defaultOn = true
 		}
+		f := flag.Bool("collect."+scraper.Name(), defaultOn, scraper.Help())
+		scraperFlags[scraper] = f
 	}
 
 	flag.Parse()
@@ -63,8 +65,14 @@ func main() {
 		log.Fatal(errors.Wrap(err, "set log level error"))
 	}
 
-	for _, v := range enabledScrapers {
-		log.Info("Scraper enabled ", v.Name())
+
+	// Register only scrapers enabled by flag.
+	enabledScrapers := []collector.Scraper{}
+	for scraper, enabled := range scraperFlags {
+		if *enabled {
+			log.Info("Scraper enabled ", scraper.Name())
+			enabledScrapers = append(enabledScrapers, scraper)
+		}
 	}
 
 	exporter, err := collector.New(opts, collector.NewMetrics(), enabledScrapers)
@@ -88,13 +96,13 @@ func main() {
 
 	http.Handle(*metricsPath, promhttp.InstrumentMetricHandler(
 		prometheus.DefaultRegisterer,
-			promhttp.HandlerFor(
-				prometheus.DefaultGatherer,
-				promhttp.HandlerOpts{
-					ErrorLog: log.StandardLogger(),
-				},
-			),
+		promhttp.HandlerFor(
+			prometheus.DefaultGatherer,
+			promhttp.HandlerOpts{
+				ErrorLog: log.StandardLogger(),
+			},
 		),
+	),
 	)
 
 	http.HandleFunc("/-/ready", func(w http.ResponseWriter, r *http.Request) {
@@ -143,5 +151,5 @@ func setupSigusr1Trap() {
 func DumpStacks() {
 	buf := make([]byte, 16384)
 	buf = buf[:runtime.Stack(buf, true)]
-	fmt.Printf("=== BEGIN goroutine stack dump ===\n%s\n=== END goroutine stack dump ===", buf)
+	log.Printf("=== BEGIN goroutine stack dump ===\n%s\n=== END goroutine stack dump ===", buf)
 }

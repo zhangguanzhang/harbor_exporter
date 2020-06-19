@@ -11,7 +11,7 @@ import (
 var _ Scraper = ScrapeUsers{}
 
 const (
-	usersUrl  = "/users"
+	usersUrl = "/users"
 )
 
 var (
@@ -20,13 +20,11 @@ var (
 		"test the users api ref work status(0 for error, 1 for success).",
 		[]string{"ref", "method"}, nil,
 	)
-
 )
 
 type usersJson struct {
 	UID int `json:"user_id"`
 }
-
 
 type ScrapeUsers struct{}
 
@@ -45,21 +43,24 @@ func (s ScrapeUsers) Scrape(client *HarborClient, ch chan<- prometheus.Metric) e
 	var err error
 
 	err = users(client, ch)
-	if err != nil {return err}
+	if err != nil {
+		return err
+	}
 
 	err = userCurrent(client, ch)
-	if err != nil {return err}
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
-
-func users(client *HarborClient, ch chan<- prometheus.Metric)  error {
+func users(client *HarborClient, ch chan<- prometheus.Metric) error {
 	var data []usersJson
 	url := usersUrl + "?page_size=1"
 	body, err := client.request(url)
 	if err != nil {
-		return  err
+		return err
 	}
 
 	if err = json.Unmarshal(body, &data); err != nil {
@@ -95,7 +96,6 @@ func users(client *HarborClient, ch chan<- prometheus.Metric)  error {
 	return nil
 }
 
-
 func userCurrent(client *HarborClient, ch chan<- prometheus.Metric) error {
 	var result usersJson
 
@@ -121,4 +121,3 @@ func userCurrent(client *HarborClient, ch chan<- prometheus.Metric) error {
 
 	return nil
 }
-

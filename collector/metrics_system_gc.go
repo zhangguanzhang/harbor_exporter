@@ -9,14 +9,12 @@ import (
 // check interface
 var _ Scraper = ScrapeGc{}
 
-
 var (
 	gcRefInfo = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "ref_work", "gc"),
 		"test the replication ref work status(0 for error, 1 for success).",
 		[]string{"ref", "method"}, nil,
 	)
-
 )
 
 type ScrapeGc struct{}
@@ -53,6 +51,3 @@ func (ScrapeGc) Scrape(client *HarborClient, ch chan<- prometheus.Metric) error 
 
 	return nil
 }
-
-
-

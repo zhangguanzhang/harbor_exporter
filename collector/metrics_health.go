@@ -8,14 +8,12 @@ import (
 // check interface
 var _ Scraper = ScrapeHealth{}
 
-
 var (
 	healthInfo = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "health"),
 		"components status(0 for error, 1 for success).",
 		[]string{"name"}, nil,
 	)
-
 )
 
 type ScrapeHealth struct{}
@@ -55,14 +53,12 @@ func (ScrapeHealth) Scrape(client *HarborClient, ch chan<- prometheus.Metric) er
 	return nil
 }
 
-
 type healthJson struct {
-	Status string `json:"status"`
-	CS []csStatus `json:"components"`
+	Status string     `json:"status"`
+	CS     []csStatus `json:"components"`
 }
 
 type csStatus struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
 	Status string `json:"status"`
 }
-

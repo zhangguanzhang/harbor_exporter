@@ -35,7 +35,6 @@ func (ScrapeStatistics) Help() string {
 	return "Collect the statistics"
 }
 
-
 // Scrape collects data from client and sends it over channel as prometheus metric.
 func (ScrapeStatistics) Scrape(client *HarborClient, ch chan<- prometheus.Metric) error {
 	var data statisticsJson
@@ -47,7 +46,6 @@ func (ScrapeStatistics) Scrape(client *HarborClient, ch chan<- prometheus.Metric
 	if err := json.Unmarshal(body, &data); err != nil {
 		return err
 	}
-
 
 	ch <- prometheus.MustNewConstMetric(
 		projectCount, prometheus.GaugeValue, data.TotalProjectCount, "total",
@@ -72,7 +70,6 @@ func (ScrapeStatistics) Scrape(client *HarborClient, ch chan<- prometheus.Metric
 	ch <- prometheus.MustNewConstMetric(
 		repoCount, prometheus.GaugeValue, data.PrivateRepoCount, "private",
 	)
-
 
 	return nil
 }

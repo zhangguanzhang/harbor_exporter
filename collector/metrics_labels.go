@@ -9,14 +9,12 @@ import (
 // check interface
 var _ Scraper = ScrapeLables{}
 
-
 var (
 	labelsRefInfo = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "ref_work", "labels"),
 		"test the labels ref work status(0 for error, 1 for success).",
 		[]string{"ref", "method"}, nil,
 	)
-
 )
 
 type ScrapeLables struct{}
@@ -53,6 +51,3 @@ func (ScrapeLables) Scrape(client *HarborClient, ch chan<- prometheus.Metric) er
 
 	return nil
 }
-
-
-

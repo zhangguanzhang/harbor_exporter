@@ -17,8 +17,8 @@ github上目前的`harbor_exporter`的轮子都不行，参考了下官方`mysql
 | Metric | Meaning | Labels | |
 | ------ | ------- | ------ | ---- |
 |harbor_up| passwd correct | |
-|harbor_exporter_collector_duration_seconds | Time consuming for each collector| collector=[...] | |
-|harbor_exporter_last_scrape_error | Did an error occur in a scrape | | |
+|harbor_exporter_collector_duration_seconds | time consuming for each collector| collector=[...] | |
+|harbor_exporter_last_scrape_error | did an error occur in a scrape | | |
 |harbor_exporter_scrape_errors_total | The number of errors in a scrape | | |
 |harbor_exporter_scrapes_total | scrape counter| | |
 |harbor_health| components status|name=[core, database, jobservice, portal, redis, registry, registryctl]| |

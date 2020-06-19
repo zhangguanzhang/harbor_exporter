@@ -16,10 +16,9 @@ const (
 
 var (
 	HarborVersion = "" // some version is not contains version number, so could by be override
-	harborInfo = prometheus.NewDesc(prometheus.BuildFQName(namespace, "version", "info"),
+	harborInfo    = prometheus.NewDesc(prometheus.BuildFQName(namespace, "version", "info"),
 		"harbor system info",
 		[]string{"registry_url", "project_creation_restriction", "self_registration", "version"}, nil)
-
 )
 
 type ScrapeSystemInfo struct{}
@@ -33,7 +32,6 @@ func (ScrapeSystemInfo) Name() string {
 func (ScrapeSystemInfo) Help() string {
 	return "Collect the general system info"
 }
-
 
 // Scrape collects data from client and sends it over channel as prometheus metric.
 func (ScrapeSystemInfo) Scrape(client *HarborClient, ch chan<- prometheus.Metric) error {
@@ -67,12 +65,12 @@ type systemInfoJson struct {
 	//WithAdmiral                 bool   `json:"with_admiral"`
 	//AdmiralEndpoint             string `json:"admiral_endpoint"`
 	//AuthMode                    string `json:"auth_mode"`
-	RegistryURL                 string `json:"registry_url"`
+	RegistryURL string `json:"registry_url"`
 	//ExternalURL                 string `json:"external_url"`
-	ProjectCreationRestriction  string `json:"project_creation_restriction"`
-	SelfRegistration            bool   `json:"self_registration"`
+	ProjectCreationRestriction string `json:"project_creation_restriction"`
+	SelfRegistration           bool   `json:"self_registration"`
 	//HasCaRoot                   bool   `json:"has_ca_root"`
-	HarborVersion               string `json:"harbor_version"`
+	HarborVersion string `json:"harbor_version"`
 	//RegistryStorageProviderName string `json:"registry_storage_provider_name"` //
 	//ReadOnly                    bool   `json:"read_only"`
 	//WithChartmuseum             bool   `json:"with_chartmuseum"` //
