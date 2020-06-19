@@ -1,0 +1,4 @@
+FROM alpine:3.11.6
+WORKDIR /root
+COPY harbor_exporter /harbor_exporter
+ENTRYPOINT ["/harbor_exporter"]
