@@ -15,7 +15,7 @@ import (
 	"syscall"
 )
 
-func LogInit(level string, file string) error {
+func LogInit(level , file string) error {
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp:   true,
 		TimestampFormat: "2006-01-02 15:04:05",
@@ -43,6 +43,7 @@ func main() {
 	metricsPath := flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 	logLevel := flag.String("log-level", "info", "The logging level:[debug, info, warn, error, fatal]")
 	logFile := flag.String("log-output", "", "the file which log to, default stdout")
+	versionP := flag.Bool("version", false, "print version info")
 	flag.StringVar(&collector.HarborVersion, "override-version", "", "override the harbor version")
 
 	opts := &collector.HarborOpts{}
@@ -60,6 +61,11 @@ func main() {
 	}
 
 	flag.Parse()
+
+	if *versionP {
+		fmt.Print(versionPrint())
+		return
+	}
 
 	if err := LogInit(*logLevel, *logFile); err != nil {
 		log.Fatal(errors.Wrap(err, "set log level error"))
@@ -86,7 +92,7 @@ func main() {
 		w.Write([]byte(`<html>
              <head><title>` + collector.Name() + `</title></head>
              <body>
-             <h1>` + collector.Name() + `</h1>
+             <h1><a style="text-decoration:none" href='https://github.com/zhangguanzhang/harbor_exporter'>` + collector.Name() + `</a></h1>
              <p><a href='` + *metricsPath + `'>Metrics</a></p>
              <h2>Build</h2>
              <pre>` + versionPrint() + `</pre>
@@ -112,7 +118,7 @@ func main() {
 
 	setupSigusr1Trap()
 
-	log.Infof("Listening on address %s", *listenAddress)
+	log.Info("Listening on address ", *listenAddress)
 
 	if err := http.ListenAndServe(*listenAddress, nil); err != nil {
 		log.Fatal(err)
