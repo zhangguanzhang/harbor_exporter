@@ -90,7 +90,7 @@ func (ScrapeProjects) Scrape(client *HarborClient, ch chan<- prometheus.Metric) 
 
 func projects(client *HarborClient, ch chan<- prometheus.Metric) (int, error) {
 	var data []projectsJson
-	url := projectsUrl + "?page_size=1"
+	url := projectsUrl + "?page_size=1&public=true"
 	body, err := client.request(url)
 	if err != nil {
 		return 0, err
@@ -212,7 +212,7 @@ func projectsMembers(id int, client *HarborClient, ch chan<- prometheus.Metric) 
 
 	var result subInsJson
 	// some version (e.g., v1.8.1 https://github.com/goharbor/harbor/issues/12273), It will return 403
-	url = fmt.Sprintf("/projects/%d/members/%d", id, id)
+	url = fmt.Sprintf("/projects/%d/members/%d", id, data[0].Id)
 	body, err = client.request(url)
 	if err != nil {
 		return err
@@ -240,7 +240,7 @@ type repoJson struct {
 // first arg must be project_id
 func reposQuery(id int, client *HarborClient, ch chan<- prometheus.Metric) error {
 	var data []repoJson
-	url := "/repositories?project_id=" + strconv.Itoa(id)
+	url := "/repositories?page_size=1&project_id=" + strconv.Itoa(id)
 	body, err := client.request(url)
 	if err != nil {
 		return err

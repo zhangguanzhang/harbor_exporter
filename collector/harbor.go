@@ -20,13 +20,14 @@ var (
 		ScrapeUsers{}:       true,
 		ScrapeLogs{}:        true,
 		ScrapeReplication{}: false,
-		ScrapeGc{}:          true,
+		ScrapeGc{}:          false,
+		ScrapeRegistries{}: false,
 	}
 
 	// TODO
 	//  tags always return full tag, see https://github.com/goharbor/harbor/issues/12279
 
-	resultErr = errors.New("cannot find data, maybe json is nil at")
+	resultErr = errors.New("cannot find data, maybe json is nil")
 )
 
 type HarborOpts struct {

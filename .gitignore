@@ -13,6 +13,7 @@
 dist
 main
 harbor_exporter
+harbor_exporter-*
 
 
 .idea/*

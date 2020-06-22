@@ -31,6 +31,7 @@ func (ScrapeGc) Help() string {
 
 // Scrape collects data from client and sends it over channel as prometheus metric.
 func (ScrapeGc) Scrape(client *HarborClient, ch chan<- prometheus.Metric) error {
+
 	var data []idJson
 	url := "/system/gc"
 	body, err := client.request(url)
@@ -42,7 +43,7 @@ func (ScrapeGc) Scrape(client *HarborClient, ch chan<- prometheus.Metric) error 
 		return err
 	}
 
-	if len(data) != 1 || data[0].ID == 0 {
+	if len(data) == 0 { //没有page_size参数
 		return errors.Wrap(resultErr, url)
 	}
 

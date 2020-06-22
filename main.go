@@ -13,6 +13,7 @@ import (
 	"os/signal"
 	"runtime"
 	"syscall"
+	"github.com/coreos/go-systemd/daemon"
 )
 
 func LogInit(level , file string) error {
@@ -119,6 +120,8 @@ func main() {
 	setupSigusr1Trap()
 
 	log.Info("Listening on address ", *listenAddress)
+
+	daemon.SdNotify(false, daemon.SdNotifyReady)
 
 	if err := http.ListenAndServe(*listenAddress, nil); err != nil {
 		log.Fatal(err)
