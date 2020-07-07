@@ -112,11 +112,14 @@ func (h *HarborClient) Ping() (bool, error) {
 		return false, err
 	}
 
-	defer resp.Body.Close()
+	resp.Body.Close()
 
-	if resp.StatusCode == http.StatusOK {
+	switch {
+	case resp.StatusCode == http.StatusOK:
 		return true, nil
+	case resp.StatusCode == http.StatusUnauthorized:
+		return false, errors.New("username or password incorrect")
+	default:
+		return false, fmt.Errorf("error handling request, http-statuscode: %s", resp.Status)
 	}
-
-	return false, errors.New("username or password incorrect")
 }

@@ -13,9 +13,9 @@ echo go build -o ${PRO_ROOT}/harbor_exporter -ldflags "${LDFLAGS}" ${PRO_ROOT}/m
 
 
 case "$1" in
-  "release") # checkout到tag构建完再checkout回来
-    bash ${PRO_ROOT}/build/lib/all-release.sh
-    ;;
+#  "release") # checkout到tag构建完再checkout回来
+#    bash ${PRO_ROOT}/build/lib/all-release.sh
+#    ;;
   "build") #使用master构建测试版本
     if [ -z `command -v go ` ];then
       echo go is not in PATH

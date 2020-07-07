@@ -126,7 +126,7 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) {
 
 	if pong, err := e.client.Ping(); pong != true || err != nil {
 		log.WithFields(log.Fields{
-			"url":      e.client.Opts.Url,
+			"url":      e.client.Opts.Url+"/configurations",
 			"username": e.client.Opts.Username,
 		}).Error(err)
 		e.metrics.HarborUp.Set(0)

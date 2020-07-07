@@ -21,7 +21,7 @@ github上目前的`harbor_exporter`的轮子都不行，参考了下官方`mysql
 | ------ | ------ | ------- | ------ | ---- |
 | all | |harbor_up| passwd correct |
 | all| |harbor_exporter_collector_duration_seconds | time consuming for each collector| collector=[...] |
-|all | |harbor_exporter_last_scrape_error | did an error occur in a scrape |
+| all| |harbor_exporter_last_scrape_error | did an error occur in a scrape |
 | all| |harbor_exporter_scrape_errors_total | The number of errors in a scrape | |
 | all| |harbor_exporter_scrapes_total | scrape counter| |
 | `v1.8.0 <=x< v2.x`| |harbor_health| components status|name=[core, database, jobservice, portal, redis, registry, registryctl]|
@@ -44,6 +44,7 @@ github上目前的`harbor_exporter`的轮子都不行，参考了下官方`mysql
 - `v1.8.1`的`/projects/1/members/1/`会一直403，这个版本的话建议disable掉`projects`
 - `v1.5.1`的`/users`的`page_size=1`不生效，这个版本的话建议disable掉`users`
 - `/replication/executions` 这个可能会超时，不建议打开`replication`
+- 告警基础的几个就够用了,`harbor_exporter_last_scrape_error`, `harbor_system_volumes_bytes`, `harbor_health`. 其他的配置也没啥难度
 
 ### Flags
 
@@ -82,7 +83,7 @@ ExecStart=/root/harbor/harbor_exporter \
     --collect.systemgc=false \
     --collect.users=false \
     --collect.replication=false \
-    --harbor-server https://harbor.dev/api/ \
+    --harbor-server https://harbor.dev/api \
 
 Restart=always
 RestartSec=4s
