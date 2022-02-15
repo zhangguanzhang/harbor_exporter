@@ -75,7 +75,7 @@ func New(opts *HarborOpts, metrics Metrics, scrapers []Scraper) (*Exporter, erro
 
 	user := os.Getenv("HARBOR_USERNAME")
 	if user != "" {
-		opts.password = user
+		opts.Username = user
 	}
 
 	pass := os.Getenv("HARBOR_PASSWORD")
