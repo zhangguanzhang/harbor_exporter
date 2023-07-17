@@ -101,7 +101,7 @@ systemctl enable --now harbor_exporter
 ```shell
 docker run -d -p 9107:9107 -e HARBOR_PASSWORD=password \
     zhangguanzhang/harbor_exporter \
-    --harbor.server=https://harbor.dev/api
+    --harbor-server=https://harbor.dev/api
 ```
 
 ## 编译(build)
